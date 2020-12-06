@@ -26,17 +26,31 @@ Distance can be represented using a variety of units of measurement. Create a `D
 struct Distance {
     var meters: Float = 0.0
     var feet: Float = 0.0
+    
+    init(fromFeet myFeet: Float) {
+        meters = myFeet / 3.28084
+        feet = myFeet
+    }
+    
+    init(fromMeters myMeters: Float) {
+        feet = myMeters * 3.28084
+        meters = myMeters
+    }
 }
 
 /*:
 Now create an instance of `Distance` called `mile`. Use the initializer for meters to set the distance to 1600. Print out the property for feet and verify that it is equal to 5249.344.
 */
-
+let mile = Distance(fromMeters: 1600)
+print(mile.feet)
+print(mile.meters)
 
 /*:
 Now create another instance of `Distance` and give it some other distance. Ensure that both properties are set correctly.
 */
-
+let mile2 = Distance(fromFeet: 10000)
+print(mile2.feet)
+print(mile2.meters)
 
 /*:
 ## Mile Times and Congratulations
@@ -46,17 +60,34 @@ The `RunningWorkout` struct below holds information about your users' running wo
 Create an instance of `RunningWorkout` and print the `averageMileTime` property. Check that it works properly.
 */
 struct RunningWorkout {
-   var distance: Double
-   var time: Double
-   var elevation: Double
+    var distance: Double
+    var time: Double
+    var elevation: Double
+    var averageMileTime: Double {
+        let mileDistance = distance / 1600
+        return time / mileDistance
+    }
 }
+
+var myWorkout = RunningWorkout(distance: 3200, time: 14.50, elevation: 0)
+print("\(myWorkout.averageMileTime) average mile time")
+
 /*:
 In other app exercises, you've provided encouraging messages to the user based on how many steps they've completed. A great place to check whether or not you should display something to the user is in a property observer.
 
 In the `Steps` struct below, add a `willSet` to the `steps` property that will check if the new value is equal to `goal`, and if it is, prints a congratulatory message. Create an instance of `Steps` where `steps` is 9999 and `goal` is 10000, then call `takeStep()` and see if your message is printed to the console.
 */
 struct Steps {
-   var steps: Int
+    var steps: Int {
+//        willSet(newSteps){
+//            print("About to set steps to \(newSteps)")
+//        }
+        didSet {
+            if steps >= goal {
+                print("GOALLLLLLLLLL")
+            }
+        }
+    }
    var goal: Int
    
    mutating func takeStep() {
@@ -64,6 +95,8 @@ struct Steps {
    }
 }
 
+var mySteps = Steps(steps: 9999, goal: 10000)
+mySteps.takeStep()
 /*:You can refer to this resource to read about Property Observers:
  https://www.hackingwithswift.com/read/0/17/properties
  */
